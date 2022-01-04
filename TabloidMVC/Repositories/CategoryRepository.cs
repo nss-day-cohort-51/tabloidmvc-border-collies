@@ -51,5 +51,50 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+        public void UpdateCategory(Category category)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            UPDATE Category
+                            SET [Name] = @name 
+                            WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@name", category.Name);
+                    cmd.Parameters.AddWithValue("@id", category.Id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public Category GetById(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT Id, [Name]
+                        FROM Category
+                        WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            Category category = new Category()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name"))
+                            };
+                            return category;
+                        }
+                        return null;
+                    }
+                }
+            }
+        }
     }
 }
