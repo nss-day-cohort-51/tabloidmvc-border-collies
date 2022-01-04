@@ -38,7 +38,13 @@ namespace TabloidMVC.Controllers
                     return NotFound();
                 }
             }
-            return View(post);
+            PostViewModel vm = new PostViewModel()
+            {
+                Post = post
+            };
+
+ 
+            return View(vm);
         }
 
         public IActionResult Create()
