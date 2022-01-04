@@ -41,5 +41,59 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+        public void Unsubscribe(int userId)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            DELETE FROM Subscription
+                            WHERE SubscriberUserProfileId = @id
+                        ";
+                    cmd.Parameters.AddWithValue("@id", userId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public Subscription GetSubscriptionByUserProfileId(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT *
+                        FROM Subscription
+                        WHERE SubscriberUserProfileId = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            Subscription subscription = new Subscription()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                SubscriberUserProfileId = reader.GetInt32(reader.GetOrdinal("SubscriberUserProfileId")),
+                                ProviderUserProfileId = reader.GetInt32(reader.GetOrdinal("ProviderUserProfileId")),
+                                BeginDateTime = reader.GetDateTime(reader.GetOrdinal("BeginDateTime"))
+                            };
+                            if (reader.IsDBNull(reader.GetOrdinal("EndDateTime")))
+                            {
+                                subscription.EndDateTime = null;
+                            }
+                            else
+                            {
+                                subscription.EndDateTime = reader.GetDateTime(reader.GetOrdinal("EndDateTime"));
+                            }
+                            return subscription;
+                        }
+                        return null;
+                    }
+                }
+            }
+        }
     }
 }
