@@ -7,6 +7,8 @@ using System.Security.Claims;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
+using TabloidMVC.Models;
+using System;
 
 namespace TabloidMVC.Controllers
 {
@@ -119,5 +121,34 @@ namespace TabloidMVC.Controllers
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.Parse(id);
         }
+
+
+        // GET: PostsController1/Delete/1
+        public ActionResult Delete(int id)
+        {
+            Post post = _postRepository.GetPublishedPostById(id);
+
+            return View(post);
+        }
+
+
+        // POST: PostsController1/Delete/1
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, Post post)
+        {
+            try
+            {
+                _postRepository.DeletePost(id);
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(post);
+            }
+        }
+
+
     }
 }
