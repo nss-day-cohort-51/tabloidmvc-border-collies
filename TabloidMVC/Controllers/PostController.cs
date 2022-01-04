@@ -7,6 +7,7 @@ using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 using TabloidMVC.Models;
 using System;
+using System.Collections.Generic;
 
 namespace TabloidMVC.Controllers
 {
@@ -75,6 +76,53 @@ namespace TabloidMVC.Controllers
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.Parse(id);
         }
+
+
+
+        // GET: OwnersController1/Edit/5
+        public ActionResult Edit(int id)
+        {
+            Post post = _postRepository.GetPublishedPostById(id);
+
+
+            
+
+
+            List<Category> categories = _categoryRepository.GetAll();
+
+            PostCreateViewModel vm = new PostCreateViewModel()
+            {
+                Post = post,
+                CategoryOptions = categories
+            };
+
+
+            if (vm == null)
+            {
+                return NotFound();
+            }
+
+            return View(vm);
+        }
+
+        // POST: OwnersController1/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id, PostCreateViewModel vm)
+        {
+            try
+            {
+                _postRepository.UpdatePost(vm.Post);
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(vm);
+            }
+        }
+
+
 
 
         // GET: PostsController1/Delete/1
