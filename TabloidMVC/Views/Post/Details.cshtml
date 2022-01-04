@@ -20,9 +20,18 @@
                 <a asp-action="Edit" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Edit">
                     <i class="fas fa-pencil-alt"></i>
                 </a>
-                 <a asp-action="Subscribe"  asp-route-id="@Model.Post.UserProfileId" class="btn btn-outline-primary mx-1" title="Subscribe">
-            <i class="fas fa-envelope-open"></i>
-        </a>
+                @if (Model.Subscription == null)
+                {
+                    <a asp-action="Subscribe" asp-route-id="@Model.Post.UserProfileId" class="btn btn-outline-primary mx-1" title="Subscribe">
+                        <i class="fas fa-envelope-open"></i>
+                    </a>
+                }
+                else
+                {
+                    <a asp-action="Unsubscribe" asp-route-id="@Model.Post.UserProfileId" class="btn btn-outline-primary mx-1" title="Unsubscribe">
+                        <i class="far fa-envelope-open"></i>
+                    </a>
+                }
                 <a asp-action="Delete" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Delete">
                     <i class="fas fa-trash"></i>
                 </a>
