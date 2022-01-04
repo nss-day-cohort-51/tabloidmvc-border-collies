@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using TabloidMVC.Models;
 using TabloidMVC.Utils;
+using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
+using TabloidMVC.Models.ViewModels;
 
 namespace TabloidMVC.Repositories
 {
@@ -53,5 +56,68 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+
+        public void AddUser (UserProfile userProfile)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                    INSERT INTO UserProfile (FirstName, LastName, Email, UserTypeId, DisplayName, CreateDateTime)
+                    OUTPUT INSERTED.Id
+                    VALUES (@firstName, @lastName, @email, @userTypeId, @displayName, sysdatetime());
+                ";
+
+                    
+                    cmd.Parameters.AddWithValue("@email", userProfile.Email);
+                    cmd.Parameters.AddWithValue("@firstName", userProfile.FirstName);
+                    cmd.Parameters.AddWithValue("@lastName", userProfile.LastName);
+                    cmd.Parameters.AddWithValue("@userTypeId", userProfile.UserTypeId);
+                    cmd.Parameters.AddWithValue("@displayName", userProfile.DisplayName);
+                   
+
+
+                    int id = (int)cmd.ExecuteScalar();
+
+                    userProfile.Id = id;
+                    
+                }
+            }
+        }
+
+        public List<UserProfile> GetAll()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT Id, FirstName, LastName, Email FROM UserProfile";
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+
+                        List<UserProfile> userProfile = new List<UserProfile>();
+
+                        while (reader.Read())
+                        {
+                            UserProfile neighborhood = new UserProfile()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Email = reader.GetString(reader.GetOrdinal("Email")),
+                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                            };
+                            userProfile.Add(neighborhood);
+                        }
+
+                        return userProfile;
+                    }
+                }
+            }
+        }
+
     }
 }

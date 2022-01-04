@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TabloidMVC.Models;
+using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -48,6 +50,42 @@ namespace TabloidMVC.Controllers
                 new ClaimsPrincipal(claimsIdentity));
 
             return RedirectToAction("Index", "Home");
+        }
+
+        public ActionResult Create()
+        {
+            RegisterViewModel vm = new RegisterViewModel()
+            {
+                UserProfile = new UserProfile(),
+               
+            };
+
+            return View(vm);
+        }
+
+        //POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(RegisterViewModel registerViewModel)
+        {
+            registerViewModel.UserProfile.UserTypeId = 2;
+            
+
+            try
+            {
+
+                _userProfileRepository.AddUser(registerViewModel.UserProfile);
+               await Login(new Credentials
+                {
+                    Email = registerViewModel.UserProfile.Email
+                }
+                );
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                return View(registerViewModel);
+            }
         }
 
         public async Task<IActionResult> Logout()
