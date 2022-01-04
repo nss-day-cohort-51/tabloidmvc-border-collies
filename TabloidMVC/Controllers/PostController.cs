@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
+using System;
 using System.Security.Claims;
+using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 
@@ -13,11 +15,13 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ISubscriptionRepository _subscriptionRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ISubscriptionRepository subscriptionRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _subscriptionRepository = subscriptionRepository;
         }
 
         public IActionResult Index()
@@ -29,6 +33,8 @@ namespace TabloidMVC.Controllers
         public IActionResult Details(int id)
         {
             var post = _postRepository.GetPublishedPostById(id);
+
+            
             if (post == null)
             {
                 int userId = GetCurrentUserProfileId();
@@ -40,7 +46,12 @@ namespace TabloidMVC.Controllers
             }
             PostViewModel vm = new PostViewModel()
             {
-                Post = post
+
+                Post = post,
+                Subscription = new Subscription(),
+                PostId = id,
+                ProviderUserProfileId = id
+
             };
 
  
@@ -73,6 +84,35 @@ namespace TabloidMVC.Controllers
                 return View(vm);
             }
         }
+        public IActionResult Subscribe(int id)
+        {
+            try
+            { 
+                var post = _postRepository.GetPublishedPostById(id);
+
+                Subscription subscription = new Subscription()
+                {
+
+                    BeginDateTime = DateAndTime.Now,
+                    EndDateTime = null,
+                    SubscriberUserProfileId = GetCurrentUserProfileId(),
+                    ProviderUserProfileId = post.UserProfileId,
+
+                };
+
+
+                _subscriptionRepository.Subscribe(subscription);
+
+
+                return RedirectToAction("Details", new { id });
+            }
+            
+            catch (Exception ex)
+            {
+                return RedirectToAction("Details", new { id });
+            }
+        }
+    
 
         private int GetCurrentUserProfileId()
         {

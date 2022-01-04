@@ -19,18 +19,25 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        INSERT INTO Subscription (SubscriberUserProfileId, ProviderUserProfileId, BeingDateTime, EndDateTime
+                        INSERT INTO Subscription (SubscriberUserProfileId, ProviderUserProfileId, BeginDateTime, EndDateTime
                              )
                         OUTPUT INSERTED.ID
                         VALUES ( @subscriberUserProfileId, @providerUserProfileId, @beginDateTime, @endDateTime
                             )";
-                    cmd.Parameters.AddWithValue("@name", subscription.SubscriberUserProfileId);
-                    cmd.Parameters.AddWithValue("@email", subscription.ProviderUserProfileId);
-                    cmd.Parameters.AddWithValue("@phoneNumber", subscription.BeingDateTime); 
-                    cmd.Parameters.AddWithValue("@address", subscription.EndDateTime);
-                   
+                    cmd.Parameters.AddWithValue("@subscriberUserProfileId", subscription.SubscriberUserProfileId);
+                    cmd.Parameters.AddWithValue("@providerUserProfileId", subscription.ProviderUserProfileId);
+                    cmd.Parameters.AddWithValue("@beginDateTime", subscription.BeginDateTime);
+                    if (subscription.EndDateTime == null)
+                    {
+                        cmd.Parameters.AddWithValue("@endDateTime", DBNull.Value);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@endDateTime", subscription.EndDateTime);
+                    }
 
-                    subscription.Id = (int)cmd.ExecuteScalar();
+
+                        subscription.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
