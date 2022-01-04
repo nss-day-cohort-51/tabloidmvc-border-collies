@@ -1,40 +1,37 @@
-﻿using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using TabloidMVC.Models;
 
 namespace TabloidMVC.Repositories
 {
-    public class CategoryRepository : BaseRepository, ICategoryRepository
+    public class ReactionRepository : BaseRepository, IReactionRepository
     {
-        public CategoryRepository(IConfiguration config) : base(config) { }
-        public List<Category> GetAll()
+        public ReactionRepository(IConfiguration config) : base(config) { }
+        public List<Reaction> GetAll()
         {
             using (var conn = Connection)
             {
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT id, name FROM Category";
+                    cmd.CommandText = "SELECT * FROM Reaction";
                     var reader = cmd.ExecuteReader();
-
-                    var categories = new List<Category>();
-
+                    var reactions = new List<Reaction>();
                     while (reader.Read())
                     {
-                        categories.Add(new Category()
+                        reactions.Add(new Reaction()
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("name")),
+                            ImageLocation = reader.GetString(reader.GetOrdinal("ImageLocation"))
                         });
                     }
-
                     reader.Close();
-
-                    return categories;
+                    return reactions;
                 }
             }
         }
-        public void AddCategory(Category category)
+        public void AddReaction(Reaction reaction)
         {
             using (var conn = Connection)
             {
@@ -42,16 +39,17 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    INSERT INTO Category ([Name])
+                    INSERT INTO Reaction ([Name], ImageLocation)
                     OUTPUT INSERTED.ID
-                    VALUES (@name);";
-                    cmd.Parameters.AddWithValue("@name", category.Name);
+                    VALUES (@name, @imageLocation);";
+                    cmd.Parameters.AddWithValue("@name", reaction.Name);
+                    cmd.Parameters.AddWithValue("@imageLocation", reaction.ImageLocation);
                     int id = (int)cmd.ExecuteScalar();
-                    category.Id = id;
+                    reaction.Id = id;
                 }
             }
         }
-        public void UpdateCategory(Category category)
+        public void DeleteReaction(int id)
         {
             using (var conn = Connection)
             {
@@ -59,16 +57,14 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                            UPDATE Category
-                            SET [Name] = @name 
+                            DELETE FROM Reaction
                             WHERE Id = @id";
-                    cmd.Parameters.AddWithValue("@name", category.Name);
-                    cmd.Parameters.AddWithValue("@id", category.Id);
+                    cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }
         }
-        public Category GetById(int id)
+        public Reaction GetById(int id)
         {
             using (var conn = Connection)
             {
@@ -76,38 +72,24 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Id, [Name]
-                        FROM Category
+                        SELECT Id, [Name], ImageLocation
+                        FROM Reaction
                         WHERE Id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            Category category = new Category()
+                            Reaction reaction = new Reaction()
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name"))
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                ImageLocation = reader.GetString(reader.GetOrdinal("ImageLocation")),
                             };
-                            return category;
+                            return reaction;
                         }
                         return null;
                     }
-                }
-            }
-        }
-        public void DeleteCategory(int id)
-        {
-            using (var conn = Connection)
-            {
-                conn.Open();
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"
-                            DELETE FROM Category
-                            WHERE Id = @id";
-                    cmd.Parameters.AddWithValue("@id", id);
-                    cmd.ExecuteNonQuery();
                 }
             }
         }
