@@ -49,7 +49,6 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
-
         public Post GetPublishedPostById(int id)
         {
             using (var conn = Connection)
@@ -90,7 +89,6 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
-
         public Post GetUserPostById(int id, int userProfileId)
         {
             using (var conn = Connection)
@@ -131,8 +129,6 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
-
-
         public void Add(Post post)
         {
             using (var conn = Connection)
@@ -163,7 +159,7 @@ namespace TabloidMVC.Repositories
         }
 
 
-       public void DeletePost(int postId)
+        public void DeletePost(int postId)
         {
             using (SqlConnection conn = Connection)
             {
