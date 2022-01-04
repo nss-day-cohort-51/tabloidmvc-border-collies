@@ -1,13 +1,17 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TabloidMVC.Models;
+using TabloidMVC.Utils;
 
 namespace TabloidMVC.Repositories
 {
-    public class SubscriptionRepository
+    public class SubscriptionRepository : BaseRepository, ISubscriptionRepository
     {
-        public void Add(Post post)
+        public SubscriptionRepository(IConfiguration config) : base(config) { }
+        public void Subscribe(Subscription subscription)
         {
             using (var conn = Connection)
             {
@@ -15,23 +19,18 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        INSERT INTO Post (
-                            Title, Content, ImageLocation, CreateDateTime, PublishDateTime,
-                            IsApproved, CategoryId, UserProfileId )
+                        INSERT INTO Subscription (SubscriberUserProfileId, ProviderUserProfileId, BeingDateTime, EndDateTime
+                             )
                         OUTPUT INSERTED.ID
-                        VALUES (
-                            @Title, @Content, @ImageLocation, @CreateDateTime, @PublishDateTime,
-                            @IsApproved, @CategoryId, @UserProfileId )";
-                    cmd.Parameters.AddWithValue("@Title", post.Title);
-                    cmd.Parameters.AddWithValue("@Content", post.Content);
-                    cmd.Parameters.AddWithValue("@ImageLocation", DbUtils.ValueOrDBNull(post.ImageLocation));
-                    cmd.Parameters.AddWithValue("@CreateDateTime", post.CreateDateTime);
-                    cmd.Parameters.AddWithValue("@PublishDateTime", DbUtils.ValueOrDBNull(post.PublishDateTime));
-                    cmd.Parameters.AddWithValue("@IsApproved", post.IsApproved);
-                    cmd.Parameters.AddWithValue("@CategoryId", post.CategoryId);
-                    cmd.Parameters.AddWithValue("@UserProfileId", post.UserProfileId);
+                        VALUES ( @subscriberUserProfileId, @providerUserProfileId, @beginDateTime, @endDateTime
+                            )";
+                    cmd.Parameters.AddWithValue("@name", subscription.SubscriberUserProfileId);
+                    cmd.Parameters.AddWithValue("@email", subscription.ProviderUserProfileId);
+                    cmd.Parameters.AddWithValue("@phoneNumber", subscription.BeingDateTime); 
+                    cmd.Parameters.AddWithValue("@address", subscription.EndDateTime);
+                   
 
-                    post.Id = (int)cmd.ExecuteScalar();
+                    subscription.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }

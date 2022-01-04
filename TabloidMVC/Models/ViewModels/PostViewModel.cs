@@ -7,7 +7,7 @@ namespace TabloidMVC.Models.ViewModels
 {
     public class PostViewModel
     { 
-            public User User { get; set; }
+            public UserProfile User { get; set; }
             public int UserId { get; set; }
             public Subscription Subscription { get; set; }
             public int SubscriptionId { get; set; }
