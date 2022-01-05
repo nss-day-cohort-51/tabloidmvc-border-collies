@@ -37,7 +37,7 @@ namespace TabloidMVC.Repositories
                     }
 
 
-                        subscription.Id = (int)cmd.ExecuteScalar();
+                    subscription.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
@@ -49,9 +49,10 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                            DELETE FROM Subscription
-                            WHERE SubscriberUserProfileId = @id
-                        ";
+                            UPDATE Subscription
+                            SET 
+                                EndDateTime = SYSDATETIME()
+                            WHERE SubscriberUserProfileId = @id AND EndDateTime IS NULL";
                     cmd.Parameters.AddWithValue("@id", userId);
                     cmd.ExecuteNonQuery();
                 }
@@ -65,9 +66,12 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT *
-                        FROM Subscription
-                        WHERE SubscriberUserProfileId = @id";
+                        select Id, SubscriberUserProfileId, ProviderUserProfileId, BeginDateTime, EndDateTime
+                          from (
+                                select Id, SubscriberUserProfileId, ProviderUserProfileId, BeginDateTime, EndDateTime, row_number() over (partition by SubscriberUserProfileId order by ID desc) as rn
+                                 from Subscription
+                                ) as t
+                          where t.rn = @id";
                     cmd.Parameters.AddWithValue("@id", id);
                     using (var reader = cmd.ExecuteReader())
                     {
