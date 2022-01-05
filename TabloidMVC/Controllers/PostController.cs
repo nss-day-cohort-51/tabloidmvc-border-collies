@@ -19,12 +19,14 @@ namespace TabloidMVC.Controllers
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly ITagRepository _tagRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ISubscriptionRepository subscriptionRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ISubscriptionRepository subscriptionRepository, ITagRepository tagRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
             _subscriptionRepository = subscriptionRepository;
+            _tagRepository = tagRepository;
         }
 
         public IActionResult Index()
@@ -37,7 +39,9 @@ namespace TabloidMVC.Controllers
         {
             var post = _postRepository.GetPublishedPostById(id);
 
-            
+            var tags = _tagRepository.GetAllTags();
+
+
             if (post == null)
             {
                 int userId = GetCurrentUserProfileId();
@@ -53,13 +57,32 @@ namespace TabloidMVC.Controllers
                 Post = post,
                 Subscription = new Subscription(),
                 PostId = id,
-                ProviderUserProfileId = id
+                ProviderUserProfileId = id,
+                Tags = tags
 
             };
 
  
             return View(vm);
         }
+
+
+        [HttpPost]
+        public IActionResult AddPostTag(PostViewModel vm)
+        {
+         
+            try
+            {
+                _postRepository.AddPostTag(vm.PostTag);
+
+                return RedirectToAction("Details", new { id = vm.Post.Id });
+            }
+            catch
+            {
+                return View(vm);
+            }
+        }
+
 
         public IActionResult Create()
         {
