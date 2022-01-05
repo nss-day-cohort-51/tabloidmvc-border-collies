@@ -27,12 +27,10 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
-
         public void DeleteComment(int commentId)
         {
             throw new System.NotImplementedException();
         }
-
         public List<Comment> GetAllPostComments(int postId)
         {
             using (var conn = Connection)
@@ -57,6 +55,38 @@ namespace TabloidMVC.Repositories
                             Content = reader.GetString(reader.GetOrdinal("Content")),
                             CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime"))
                         });
+                    }
+                    reader.Close();
+                    return comments;
+                }
+            }
+        }
+        public List<Comment> GetAllPostComments(int postId, IPostRepository repo)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                      Select * from Comment
+                      WHERE PostId = @postId";
+                    cmd.Parameters.AddWithValue("@postId", postId);
+                    var comments = new List<Comment>();
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Comment cmt = new Comment()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),                           
+                            PostId = reader.GetInt32(reader.GetOrdinal("PostId")),
+                            UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
+                            Subject = reader.GetString(reader.GetOrdinal("Subject")),
+                            Content = reader.GetString(reader.GetOrdinal("Content")),
+                            CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime"))                           
+                        };
+                        cmt.Post = repo.GetUserPostById(postId, cmt.UserProfileId);
+                        comments.Add(cmt);
                     }
                     reader.Close();
                     return comments;

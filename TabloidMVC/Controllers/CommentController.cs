@@ -26,7 +26,7 @@ namespace TabloidMVC.Controllers
             CommentViewModel vm = new CommentViewModel()
             {
                 PostId = _id,
-                Comments = _commentRepository.GetAllPostComments(postId)
+                Comments = _commentRepository.GetAllPostComments(postId, _postRepository)
             };
             return View(vm);
         }

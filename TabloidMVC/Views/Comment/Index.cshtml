@@ -17,7 +17,7 @@
                 PostId
             </th>
             <th>
-                UserProfileId
+                User
             </th>
             <th>
                 Subject
@@ -26,7 +26,7 @@
                 Content
             </th>
             <th>
-                CreateDateTime
+                Created
             </th>
             <th></th>
         </tr>
@@ -35,13 +35,10 @@
 @foreach (var item in Model.Comments) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.PostId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UserProfileId)
+                @Html.DisplayFor(modelItem => item.Post.UserProfile.DisplayName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Subject)
@@ -50,7 +47,7 @@
                 @Html.DisplayFor(modelItem => item.Content)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreateDateTime)
+                @item.CreateDateTime.ToShortDateString()
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
