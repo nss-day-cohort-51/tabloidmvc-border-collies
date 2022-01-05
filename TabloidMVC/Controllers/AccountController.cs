@@ -69,7 +69,14 @@ namespace TabloidMVC.Controllers
         public async Task<IActionResult> Create(RegisterViewModel registerViewModel)
         {
             registerViewModel.UserProfile.UserTypeId = 2;
-            
+
+            var userProfile = _userProfileRepository.GetByEmail(registerViewModel.UserProfile.Email);
+
+            if (userProfile.Email == registerViewModel.UserProfile.Email)
+            {
+                ModelState.AddModelError("Email", "Invalid email");
+                return View("Create");
+            }
 
             try
             {
@@ -80,6 +87,7 @@ namespace TabloidMVC.Controllers
                     Email = registerViewModel.UserProfile.Email
                 }
                 );
+               
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
