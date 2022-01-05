@@ -24,6 +24,11 @@ namespace TabloidMVC.Controllers
         {
             return View();
         }
+        public ActionResult Index()
+        {
+            var allUsers= _userProfileRepository.GetAll();
+            return View(allUsers);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Login(Credentials credentials)
@@ -45,6 +50,7 @@ namespace TabloidMVC.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, userProfile.Id.ToString()),
                 new Claim(ClaimTypes.Email, userProfile.Email),
+                new Claim(ClaimTypes.Role, userProfile.UserType.Name)
             };
 
             var claimsIdentity = new ClaimsIdentity(
