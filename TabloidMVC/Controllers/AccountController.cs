@@ -80,7 +80,8 @@ namespace TabloidMVC.Controllers
         public async Task<IActionResult> Create(RegisterViewModel registerViewModel)
         {
             registerViewModel.UserProfile.UserTypeId = 2;
-            
+            registerViewModel.UserProfile.IsActive = true;
+
 
             try
             {

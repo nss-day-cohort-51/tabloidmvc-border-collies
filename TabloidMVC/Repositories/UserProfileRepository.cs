@@ -101,7 +101,8 @@ namespace TabloidMVC.Repositories
                               u.CreateDateTime, u.ImageLocation, u.UserTypeId, u.IsActive,
                               ut.[Name] AS UserTypeName
                                 FROM UserProfile u
-                              LEFT JOIN UserType ut ON u.UserTypeId = ut.id";
+                              LEFT JOIN UserType ut ON u.UserTypeId = ut.id
+                                ORDER BY u.FirstName";
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -116,6 +117,8 @@ namespace TabloidMVC.Repositories
                                 Email = reader.GetString(reader.GetOrdinal("Email")),
                                 FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
                                 LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+
                                 UserType = new UserType()
                                 {
                                     Id = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
