@@ -35,6 +35,11 @@ namespace TabloidMVC.Controllers
                 ModelState.AddModelError("Email", "Invalid email");
                 return View();
             }
+            else if (userProfile.IsActive != true)
+            {
+                ModelState.AddModelError("IsActive", "Account Disabled");
+                return View();
+            }
 
             var claims = new List<Claim>
             {

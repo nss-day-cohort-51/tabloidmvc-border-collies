@@ -20,7 +20,7 @@ namespace TabloidMVC.Repositories
                 {
                     cmd.CommandText = @"
                        SELECT u.id, u.FirstName, u.LastName, u.DisplayName, u.Email,
-                              u.CreateDateTime, u.ImageLocation, u.UserTypeId,
+                              u.CreateDateTime, u.ImageLocation, u.UserTypeId, u.IsActive,
                               ut.[Name] AS UserTypeName
                          FROM UserProfile u
                               LEFT JOIN UserType ut ON u.UserTypeId = ut.id
@@ -42,6 +42,7 @@ namespace TabloidMVC.Repositories
                             CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
                             ImageLocation = DbUtils.GetNullableString(reader, "ImageLocation"),
                             UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
+                            IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
                             UserType = new UserType()
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
@@ -65,9 +66,9 @@ namespace TabloidMVC.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    INSERT INTO UserProfile (FirstName, LastName, Email, UserTypeId, DisplayName, CreateDateTime)
+                    INSERT INTO UserProfile (FirstName, LastName, Email, UserTypeId, DisplayName, CreateDateTime, isActive)
                     OUTPUT INSERTED.Id
-                    VALUES (@firstName, @lastName, @email, @userTypeId, @displayName, sysdatetime());
+                    VALUES (@firstName, @lastName, @email, @userTypeId, @displayName, sysdatetime(), @isActive);
                 ";
 
                     
@@ -76,7 +77,9 @@ namespace TabloidMVC.Repositories
                     cmd.Parameters.AddWithValue("@lastName", userProfile.LastName);
                     cmd.Parameters.AddWithValue("@userTypeId", userProfile.UserTypeId);
                     cmd.Parameters.AddWithValue("@displayName", userProfile.DisplayName);
-                   
+                    cmd.Parameters.AddWithValue("@isActive", userProfile.IsActive);
+
+
 
 
                     int id = (int)cmd.ExecuteScalar();
