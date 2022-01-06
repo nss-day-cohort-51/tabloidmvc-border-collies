@@ -14,5 +14,21 @@ namespace TabloidMVC.Models.ViewModels
             public Subscription Subscription { get; set; }
             public int SubscriptionId { get; set; }
             public Post Post { get; set; }
+            public string EstimatedReadTime
+            {
+                get
+                {
+                int wordCount = Post.Title.Split(' ').Count() + Post.Content.Split(' ').Count();
+                decimal time = Math.Ceiling(wordCount / 60m);
+                if (time > 1)
+                {
+                    return $"{time} minutes";
+                }
+                else
+                {
+                    return $"{time} minute";
+                }                
+                }
+            }
     }
 }
