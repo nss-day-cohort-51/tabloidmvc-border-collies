@@ -32,8 +32,19 @@ namespace TabloidMVC.Controllers
         public ActionResult DeactivateUser(int id)
         {
             UserProfile userProfile = _userProfileRepository.GetById(id);
-       
+
             userProfile.IsActive = false;
+            _userProfileRepository.DeactivateUser(userProfile);
+
+            return RedirectToAction("Index");
+
+
+        }
+        public ActionResult ReactivateUser(int id)
+        {
+            UserProfile userProfile = _userProfileRepository.GetById(id);
+
+            userProfile.IsActive = true;
             _userProfileRepository.DeactivateUser(userProfile);
 
             return RedirectToAction("Index");
