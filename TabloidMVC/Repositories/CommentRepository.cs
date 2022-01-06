@@ -29,7 +29,19 @@ namespace TabloidMVC.Repositories
         }
         public void DeleteComment(int commentId)
         {
-            throw new System.NotImplementedException();
+            using (var conn = Connection)
+            {
+                conn.Open();
+
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM Comment WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@id", commentId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
         public List<Comment> GetAllPostComments(int postId)
         {
