@@ -7,8 +7,6 @@ using System.Security.Claims;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
-using TabloidMVC.Models;
-using System;
 using System.Collections.Generic;
 
 namespace TabloidMVC.Controllers
@@ -30,6 +28,7 @@ namespace TabloidMVC.Controllers
             var posts = _postRepository.GetAllPublishedPosts();
             return View(posts);
         }
+       
         public IActionResult Details(int id)
         {
             var post = _postRepository.GetPublishedPostById(id);

@@ -29,6 +29,18 @@ namespace TabloidMVC.Controllers
             var allUsers= _userProfileRepository.GetAll();
             return View(allUsers);
         }
+        public ActionResult DeactivateUser(int id)
+        {
+            UserProfile userProfile = _userProfileRepository.GetById(id);
+       
+            userProfile.IsActive = false;
+            _userProfileRepository.DeactivateUser(userProfile);
+
+            return RedirectToAction("Index");
+
+
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Login(Credentials credentials)
