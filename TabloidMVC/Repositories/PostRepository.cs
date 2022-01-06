@@ -129,6 +129,28 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+        public int GetUserProfileId(int postId)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                       SELECT * FROM Post 
+                        WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", postId);
+                    var reader = cmd.ExecuteReader();
+                    int userId = 0;
+                    if (reader.Read())
+                    {
+                        userId = reader.GetInt32(reader.GetOrdinal("UserProfileId"));
+                    }
+                    reader.Close();
+                    return userId;
+                }
+            }
+        }
         public void Add(Post post)
         {
             using (var conn = Connection)
