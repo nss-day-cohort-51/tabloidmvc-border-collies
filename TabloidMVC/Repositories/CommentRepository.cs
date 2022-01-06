@@ -61,6 +61,37 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+        public Comment GetCommentById(int postId, int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                      Select * from Comment
+                      WHERE PostId = @postId AND Id = @id";
+                    cmd.Parameters.AddWithValue("@postId", postId);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    Comment comment = null;
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        comment = new Comment()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            PostId = reader.GetInt32(reader.GetOrdinal("PostId")),
+                            UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
+                            Subject = reader.GetString(reader.GetOrdinal("Subject")),
+                            Content = reader.GetString(reader.GetOrdinal("Content")),
+                            CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime"))
+                        };
+                    }
+                    reader.Close();
+                    return comment;
+                }
+            }
+        }
         public List<Comment> GetAllPostComments(int postId, IPostRepository repo)
         {
             using (var conn = Connection)
@@ -96,7 +127,23 @@ namespace TabloidMVC.Repositories
 
         public void UpdateComment(Comment comment)
         {
-            throw new System.NotImplementedException();
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            UPDATE Comment
+                            SET 
+                                Subject = @subject, 
+                                Content = @content
+                            WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@subject", comment.Subject);
+                    cmd.Parameters.AddWithValue("@content", comment.Content);
+                    cmd.Parameters.AddWithValue("@id", comment.Id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
     }
 }
