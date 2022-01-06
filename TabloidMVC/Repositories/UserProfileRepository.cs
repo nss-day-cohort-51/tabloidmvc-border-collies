@@ -137,7 +137,7 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
-        public void DeactivateUser(UserProfile userProfile)
+        public void ChangeUser(UserProfile userProfile)
         {
             using (SqlConnection conn = Connection)
             {
@@ -154,7 +154,10 @@ namespace TabloidMVC.Repositories
                                 Email = @email,
                                 CreateDateTime = @createDateTime,
                                 ImageLocation = @imageLocation,
-                                IsActive = @isActive
+                                IsActive = @isActive,
+                                UserTypeId = @userTypeId
+
+
                            WHERE Id = @id";
                   
                     cmd.Parameters.AddWithValue("@displayName", userProfile.DisplayName);
@@ -171,6 +174,7 @@ namespace TabloidMVC.Repositories
                     cmd.Parameters.AddWithValue("@imageLocation", userProfile.ImageLocation);
                     }
                     cmd.Parameters.AddWithValue("@isActive", userProfile.IsActive);
+                    cmd.Parameters.AddWithValue("@userTypeId", userProfile.UserTypeId);
                     cmd.Parameters.AddWithValue("@id", userProfile.Id);
 
                    
