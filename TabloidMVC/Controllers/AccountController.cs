@@ -41,7 +41,7 @@ namespace TabloidMVC.Controllers
             UserProfile userProfile = _userProfileRepository.GetById(id);
 
             userProfile.IsActive = false;
-            _userProfileRepository.DeactivateUser(userProfile);
+            _userProfileRepository.ChangeUser(userProfile);
 
             return RedirectToAction("Index");
 
@@ -52,11 +52,26 @@ namespace TabloidMVC.Controllers
             UserProfile userProfile = _userProfileRepository.GetById(id);
 
             userProfile.IsActive = true;
-            _userProfileRepository.DeactivateUser(userProfile);
+            _userProfileRepository.ChangeUser(userProfile);
 
             return RedirectToAction("Index");
 
 
+        }
+        public ActionResult MakeAdmin(int id)
+        {
+            UserProfile userProfile = _userProfileRepository.GetById(id);
+            userProfile.UserTypeId = 1;
+            _userProfileRepository.ChangeUser(userProfile);
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult RevokeAdmin(int id)
+        {
+            UserProfile userProfile = _userProfileRepository.GetById(id);
+            userProfile.UserTypeId = 2;
+            _userProfileRepository.ChangeUser(userProfile);
+            return RedirectToAction("Index");
         }
 
 
