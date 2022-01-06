@@ -26,8 +26,11 @@
                 <a asp-action="Delete" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Delete">
                     <i class="fas fa-trash"></i>
                 </a>
+                <a asp-action="ManageTags" asp-route-id="@Model.Post.UserProfileId" class="btn btn-outline-primary mx-1" title="Manage Tags">
+                   <button>Manage Tags</button>
+                </a>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 
                 <select asp-for="@Model.Post.Id" class="form-control">
                     <option value="">Manage Tags</option>
@@ -44,7 +47,7 @@
                     <input type="submit" value="Save" class="btn btn-primary" />
                 </div>
 
-            </form>
+            </form>*@
         </section>
         <hr />
         @if (!string.IsNullOrWhiteSpace(Model.Post.ImageLocation))

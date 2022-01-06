@@ -1,0 +1,37 @@
+﻿@model IEnumerable<TabloidMVC.Models.Tag>
+
+@{
+    ViewData["Title"] = "ManageTags";
+}
+
+<h1>ManageTags</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <div class="form-group">
+
+            <select id="TagId" multiple="multiple" class="form-control" name="TagId">
+                <option value="">Manage Tags</option>
+                @foreach (Tag tags in Model)
+                {
+                    <option value="@tags.Id">@tags.Name</option>
+
+                }
+            </select>
+            @*<span asp-validation-for="@Model" class="text-danger"></span>*@
+        </div>
+</table>

@@ -41,6 +41,7 @@ namespace TabloidMVC.Controllers
 
             var tags = _tagRepository.GetAllTags();
 
+            //var postTags = _postRepository.GetPostByTag(id);
 
             if (post == null)
             {
@@ -67,6 +68,7 @@ namespace TabloidMVC.Controllers
         }
 
 
+
         [HttpPost]
         public IActionResult AddPostTag(PostViewModel vm)
         {
@@ -81,6 +83,15 @@ namespace TabloidMVC.Controllers
             {
                 return View(vm);
             }
+        }
+
+        public IActionResult ManageTags()
+        {
+
+            var postTag = _tagRepository.GetAllTags();
+
+            return View(postTag);
+            
         }
 
 

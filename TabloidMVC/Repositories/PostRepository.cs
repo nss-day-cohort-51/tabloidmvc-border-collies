@@ -129,6 +129,41 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+
+
+//        public Tag GetPostByTag(int PostId)
+//        {
+//            using (var conn = Connection)
+//            {
+//                conn.Open();
+//                using (var cmd = conn.CreateCommand())
+//                {
+//                    cmd.CommandText = @"
+//                        SELECT t.id, t.Name, p.Title
+//                        from Tag t
+//                        LEFT JOIN PostTag pt ON pt.TagId = t.id
+//                        LEFT JOIN Post p on pt.PostId = p.Id
+//                        where pt.PostId = p.Id
+//";
+
+//                    cmd.Parameters.AddWithValue("@p.Id", PostId);
+//                    var reader = cmd.ExecuteReader();
+
+//                    Tag post = null;
+
+//                    if (reader.Read())
+//                    {
+//                        post = NewPostFromReader(reader);
+//                    }
+
+//                    reader.Close();
+
+//                    return post;
+//                }
+//            }
+//        }
+
+
         public void Add(Post post)
         {
             using (var conn = Connection)
