@@ -41,7 +41,7 @@ namespace TabloidMVC.Controllers
 
             var tags = _tagRepository.GetAllTags();
 
-            //var postTags = _postRepository.GetPostByTag(id);
+            List<int> postTags = _postRepository.GetTagsByPostId(id);
 
             if (post == null)
             {
@@ -85,14 +85,45 @@ namespace TabloidMVC.Controllers
             }
         }
 
-        public IActionResult ManageTags()
+        public IActionResult ManageTags(int id)
         {
+            var selectedTags = _postRepository.GetTagsByPostId(id);
+            
+            var allTags = _tagRepository.GetAllTags();
 
-            var postTag = _tagRepository.GetAllTags();
+            Post post = _postRepository.GetPublishedPostById(id);
 
-            return View(postTag);
+            var vm = new TagViewModel
+            {
+                Post = post,
+                Tags = allTags,
+                SelectedTags = selectedTags
+            };
+
+
+            return View(vm);
             
         }
+
+        [HttpPost]
+        public IActionResult ManageTags (int id, TagViewModel vm)
+        {
+            foreach (int tagId in vm.SelectedTags)
+            {
+                PostTag postTag = new PostTag
+                {
+                     TagId = tagId,
+                     PostId = id
+                };
+
+                _tagRepository.AddTagToPost(postTag);
+            }
+
+            return RedirectToAction("Index");
+
+        }
+
+
 
 
         public IActionResult Create()
@@ -150,6 +181,9 @@ namespace TabloidMVC.Controllers
             }
         }
     
+
+        
+
 
         private int GetCurrentUserProfileId()
         {

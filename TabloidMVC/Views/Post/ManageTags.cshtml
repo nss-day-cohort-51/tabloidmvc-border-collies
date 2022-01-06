@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TabloidMVC.Models.Tag>
+﻿@model TabloidMVC.Models.ViewModels.TagViewModel
 
 @{
     ViewData["Title"] = "ManageTags";
@@ -6,32 +6,37 @@
 
 <h1>ManageTags</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <div class="form-group">
+<h4>TagViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ManageTags">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Post" />
+            <div class="form-group">
 
-            <select id="TagId" multiple="multiple" class="form-control" name="TagId">
-                <option value="">Manage Tags</option>
-                @foreach (Tag tags in Model)
-                {
-                    <option value="@tags.Id">@tags.Name</option>
+                <select asp-for="@Model.SelectedTags"  multiple class="form-control" >
+                   
+                    @foreach (Tag tag in Model.Tags)
+                    {
+                        <option value="@tag.Id">@tag.Name</option>
+                    }
+                </select>
+              
+            </div>
 
-                }
-            </select>
-            @*<span asp-validation-for="@Model" class="text-danger"></span>*@
-        </div>
-</table>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
