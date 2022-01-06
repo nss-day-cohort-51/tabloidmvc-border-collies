@@ -79,10 +79,10 @@
                 @Html.DisplayFor(modelItem => item.FullName)
             </td>
             <td>
-                
-                @Html.ActionLink("DeactivateUser", "DeactivateUser", new { id = item.Id }) |
-                @Html.ActionLink("ReactivateUser", "ReactivateUser", new { id = item.Id }) 
-           
+
+                @Html.ActionLink("Deactivate User", "DeactivateUser", new { id = item.Id }) |
+                @Html.ActionLink("Reactivate User", "ReactivateUser", new { id = item.Id })
+                @Html.ActionLink("Details", "Details", new { id = item.Id })
             </td>
         </tr>
 }

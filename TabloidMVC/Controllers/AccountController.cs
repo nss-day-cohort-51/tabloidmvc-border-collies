@@ -29,6 +29,13 @@ namespace TabloidMVC.Controllers
             var allUsers= _userProfileRepository.GetAll();
             return View(allUsers);
         }
+
+        public IActionResult Details(int id)
+        {
+
+            UserProfile user = _userProfileRepository.GetById(id);
+            return View(user);
+        }
         public ActionResult DeactivateUser(int id)
         {
             UserProfile userProfile = _userProfileRepository.GetById(id);
