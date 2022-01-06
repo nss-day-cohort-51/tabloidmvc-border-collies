@@ -79,9 +79,10 @@
                 @Html.DisplayFor(modelItem => item.FullName)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                
+                @Html.ActionLink("DeactivateUser", "DeactivateUser", new { id = item.Id }) |
+                @Html.ActionLink("ReactivateUser", "ReactivateUser", new { id = item.Id }) 
+           
             </td>
         </tr>
 }
