@@ -18,7 +18,7 @@ namespace TabloidMVC.Models.ViewModels
             public List<Tag> Tags { get; set; }
         public Tag Tag { get; set; }
        
-        public List<string> AllTags { get; set; }
+        public List<PostTag> AllTags { get; set; }
 
 
 

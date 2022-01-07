@@ -131,7 +131,7 @@ namespace TabloidMVC.Repositories
         }
 
 
-        public List<string> GetAllPostTagsForPost(int id)
+        public List<PostTag>GetAllPostTagsForPost(int id)
         {
             using (var conn = Connection)
             {
@@ -139,7 +139,7 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                   select pt.TagId, t.Name as TagName from PostTag pt
+                   select pt.Id, pt.PostId, pt.TagId, t.Name as TagName from PostTag pt
                    join Post p on p.Id = pt.PostId
                    join Tag t on t.Id = pt.TagId
                    where pt.PostId = p.Id";
@@ -147,23 +147,37 @@ namespace TabloidMVC.Repositories
                     cmd.Parameters.AddWithValue("@PostId", id);
                     var reader = cmd.ExecuteReader();
 
-                    List<string> tagNames = new();
+                    var postTagList = new List<PostTag>();
 
                     while (reader.Read())
                     {
-                        tagNames.Add(reader.GetString(reader.GetOrdinal("TagName")));
+                        PostTag newPostTag = new PostTag()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            PostId = reader.GetInt32(reader.GetOrdinal("PostId")),
+
+                            Tag = new Tag()
+                            {
+                                Name = reader.GetString(reader.GetOrdinal("TagName"))
+                            }
+                        };
+                        postTagList.Add(newPostTag);
                     }
-
-
                     reader.Close();
 
-                    return tagNames;
+                    return postTagList;
                 }
             }
         }
 
 
-        public void Add(Post post)
+
+
+
+
+
+
+            public void Add(Post post)
         {
             using (var conn = Connection)
             {

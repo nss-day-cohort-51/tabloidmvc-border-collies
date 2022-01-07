@@ -15,10 +15,10 @@
                 </div>
             <div>
                 <h3>Post Tags</h3>
-                @foreach (string tags in Model.AllTags)
+                @foreach (PostTag tags in Model.AllTags)
                 {
                     <div class="row-cols-1">
-                        <p>@Html.DisplayFor(modelItem => tags)</p>
+                        <p>@Html.DisplayFor(modelItem => tags.Tag.Name)</p>
                     </div>
                 }
             </div>
