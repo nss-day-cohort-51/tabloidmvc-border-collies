@@ -41,7 +41,7 @@ namespace TabloidMVC.Controllers
 
             var tags = _tagRepository.GetAllTags();
 
-            List<int> postTags = _postRepository.GetTagsByPostId(id);
+            List<string> allTags = _postRepository.GetAllPostTagsForPost(id);
 
             if (post == null)
             {
@@ -59,7 +59,8 @@ namespace TabloidMVC.Controllers
                 Subscription = new Subscription(),
                 PostId = id,
                 ProviderUserProfileId = id,
-                Tags = tags
+                Tags = tags,
+                AllTags = allTags
 
             };
 
@@ -87,7 +88,7 @@ namespace TabloidMVC.Controllers
 
         public IActionResult ManageTags(int id)
         {
-            var selectedTags = _postRepository.GetTagsByPostId(id);
+            var selectedTags = _postRepository.GetPostTagsByPostId(id);
             
             var allTags = _tagRepository.GetAllTags();
 
@@ -122,9 +123,6 @@ namespace TabloidMVC.Controllers
             return RedirectToAction("Index");
 
         }
-
-
-
 
         public IActionResult Create()
         {
@@ -180,10 +178,6 @@ namespace TabloidMVC.Controllers
                 return RedirectToAction("Details", new { id });
             }
         }
-    
-
-        
-
 
         private int GetCurrentUserProfileId()
         {

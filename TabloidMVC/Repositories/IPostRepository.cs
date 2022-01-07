@@ -11,9 +11,8 @@ namespace TabloidMVC.Repositories
         List<Post> GetAllPublishedPosts();
         Post GetPublishedPostById(int id);
         Post GetUserPostById(int id, int userProfileId);
-        Tag GetPostByTag(int PostId);
-        //Post GetSubsPost (int)
-        List<int> GetTagsByPostId(int id);
+        List<string> GetAllPostTagsForPost(int id);
+         List<int> GetPostTagsByPostId(int id);
         void AddPostTag(PostTag postTag);
     }
 }

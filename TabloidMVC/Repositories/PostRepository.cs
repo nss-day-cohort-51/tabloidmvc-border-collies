@@ -131,7 +131,7 @@ namespace TabloidMVC.Repositories
         }
 
 
-        public PostTag GetTagByPost(int PostId)
+        public List<string> GetAllPostTagsForPost(int id)
         {
             using (var conn = Connection)
             {
@@ -139,26 +139,25 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT t.id, t.Name, p.Title
-                        from Tag t
-                        LEFT JOIN PostTag pt ON pt.TagId = t.id
-                        LEFT JOIN Post p on pt.PostId = p.Id
-                        where pt.PostId = p.Id
-";
+                   select pt.TagId, t.Name as TagName from PostTag pt
+                   join Post p on p.Id = pt.PostId
+                   join Tag t on t.Id = pt.TagId
+                   where pt.PostId = p.Id";
 
-                    cmd.Parameters.AddWithValue("@p.Id", PostId);
+                    cmd.Parameters.AddWithValue("@PostId", id);
                     var reader = cmd.ExecuteReader();
 
-                    PostTag post = null;
+                    List<string> tagNames = new();
 
                     while (reader.Read())
                     {
-                        
+                        tagNames.Add(reader.GetString(reader.GetOrdinal("TagName")));
                     }
+
 
                     reader.Close();
 
-                    return post;
+                    return tagNames;
                 }
             }
         }
@@ -231,7 +230,7 @@ namespace TabloidMVC.Repositories
             }
         }
 
-       public List<int> GetTagsByPostId(int id)
+       public List<int> GetPostTagsByPostId(int id)
         {
 
             using (var conn = Connection)
