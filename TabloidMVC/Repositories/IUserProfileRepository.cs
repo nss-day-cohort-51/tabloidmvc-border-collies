@@ -1,9 +1,16 @@
-﻿using TabloidMVC.Models;
+﻿using System.Collections.Generic;
+using TabloidMVC.Models;
+using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Repositories
 {
     public interface IUserProfileRepository
     {
         UserProfile GetByEmail(string email);
+        List<UserProfile> GetAll();
+         void AddUser(UserProfile userProfile);
+         void ChangeUser(UserProfile user);
+         UserProfile GetById(int Id);
+
     }
 }

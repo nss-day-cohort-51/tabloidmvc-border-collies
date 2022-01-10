@@ -1,0 +1,74 @@
+﻿@model TabloidMVC.Models.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>UserProfile</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @*<div class="form-group">
+
+                    <input type="hidden" asp-for="UserProfile.Id" class="form-control" />
+
+                </div>*@
+            <div class="form-group">
+                <label asp-for="UserProfile.FirstName" class="control-label"></label>
+                <input asp-for="UserProfile.FirstName" class="form-control" />
+                <span asp-validation-for="UserProfile.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserProfile.LastName" class="control-label"></label>
+                <input asp-for="UserProfile.LastName" class="form-control" />
+                <span asp-validation-for="UserProfile.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserProfile.DisplayName" class="control-label"></label>
+                <input asp-for="UserProfile.DisplayName" class="form-control" />
+                <span asp-validation-for="UserProfile.DisplayName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserProfile.Email" class="control-label"></label>
+                <input asp-for="UserProfile.Email" class="form-control" />
+                <span asp-validation-for="UserProfile.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+
+                <input type="hidden" asp-for="UserProfile.CreateDateTime" class="form-control" />
+
+            </div>
+            <div class="form-group">
+                <label asp-for="UserProfile.ImageLocation" class="control-label"></label>
+                <input asp-for="UserProfile.ImageLocation" class="form-control" />
+                <span asp-validation-for="UserProfile.ImageLocation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+
+                <input type="hidden" asp-for="UserProfile.UserTypeId" class="form-control" />
+
+            </div>
+            <div class="form-group">
+
+                <input type="hidden" asp-for="UserProfile.FullName" class="form-control" />
+
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
